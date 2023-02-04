@@ -1,5 +1,7 @@
 import express from 'express';
+import { Request, Response } from 'express';
 import bodyParser from 'body-parser';
+//const querystring = require('querystring');
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 (async () => {
@@ -26,7 +28,26 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //    image_url: URL of a publicly accessible image
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
-
+  app.get( "/filteredimage", async ( req: Request, res: Response) => {
+    let imageUrl = req.query.image_url;
+    
+    if(!imageUrl){
+      return res.status(400).send({ message: 'Image URL is required' });
+    }
+    
+    filterImageFromURL(imageUrl)
+    .then(filteredImage => {
+      console.log("filteredpath >>>>>>>> "+filteredImage);
+      return res.status(200).sendFile(filteredImage, error => {
+        if (!error) {
+          let images: string[] = [filteredImage];
+          deleteLocalFiles(images);
+        }
+      });
+    }).catch(() => {
+      return res.status(422).send("Error Occured while Filtering Your Image!!!");
+    });
+  } );
   /**************************************************************************** */
 
   //! END @TODO1
