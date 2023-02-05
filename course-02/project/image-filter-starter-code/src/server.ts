@@ -37,7 +37,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     
     filterImageFromURL(imageUrl)
     .then(filteredImage => {
-      console.log("filteredpath >>>>>>>> "+filteredImage);
+      //console.log("filteredpath >>>>>>>> "+filteredImage);
       return res.status(200).sendFile(filteredImage, error => {
         if (!error) {
           let images: string[] = [filteredImage];
